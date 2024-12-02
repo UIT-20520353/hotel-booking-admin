@@ -1,12 +1,42 @@
+import { administrativeApi } from "@/api/administrative";
+import { provinceApi } from "@/api/provinceApi";
 import { MarkerIcon } from "@/assets/icons";
+import { Button } from "@/components/common";
 import appConstants from "@/constants/app";
-import React from "react";
+import React, { useEffect } from "react";
 import Map, { Marker } from "react-map-gl";
+import { useNavigate } from "react-router-dom";
+import { useLocalStorage } from "usehooks-ts";
 
 const Dashboard: React.FunctionComponent = () => {
+  const navigate = useNavigate();
+  const [accessToken, , removeAccessToken] = useLocalStorage(
+    appConstants.ACCESS_TOKEN_KEY,
+    ""
+  );
+
+  const getProvinces = async () => {
+    const response = await administrativeApi.getAllRegions();
+    console.log(response);
+  };
+
+  const onLogout = () => {
+    removeAccessToken();
+  };
+
+  useEffect(() => {
+    getProvinces();
+  }, []);
+
+  useEffect(() => {
+    if (!accessToken) {
+      navigate("/login");
+    }
+  }, [navigate, accessToken]);
+
   return (
-    <div className="flex items-center justify-center w-full h-screen text-red-700">
-      <Map
+    <div className="flex items-center justify-center w-full h-screen">
+      {/* <Map
         mapboxAccessToken={appConstants.VITE_MAP_BOX_KEY}
         initialViewState={{
           longitude: -122.4,
@@ -19,7 +49,8 @@ const Dashboard: React.FunctionComponent = () => {
         <Marker longitude={-122.4} latitude={37.8}>
           <MarkerIcon color="red" />
         </Marker>
-      </Map>
+      </Map> */}
+      <Button text="Click me" onClick={onLogout} />
     </div>
   );
 };
