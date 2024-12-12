@@ -1,13 +1,13 @@
 import { authenticationApi } from "@/api";
 import { Button } from "@/components/common";
-import { InputField } from "@/components/form";
+import { LucideEye, LucideEyeOff } from "@/components/icons";
 import appConstants from "@/constants/app";
-import useModal from "@/hooks/useModal";
 import { selectGlobalState } from "@/redux/globalSlice";
 import { loginSchema } from "@/schema/login";
 import { TLoginForm } from "@/types/form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useEffect } from "react";
+import { Input } from "@nextui-org/react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +19,6 @@ const LoginPage: React.FunctionComponent = () => {
     appConstants.ACCESS_TOKEN_KEY,
     ""
   );
-  const { showErrorModal } = useModal();
   const { loading } = useSelector(selectGlobalState);
   const {
     handleSubmit,
@@ -29,13 +28,18 @@ const LoginPage: React.FunctionComponent = () => {
     resolver: yupResolver(loginSchema),
   });
 
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
+
   const onSubmit = async (data: TLoginForm) => {
-    const response = await authenticationApi.login(data);
-    if (response.ok && response.body) {
-      setAccessToken(response.body.accessToken);
-    } else {
-      showErrorModal();
-    }
+    // const response = await authenticationApi.login(data);
+    // if (response.ok && response.body) {
+    //   setAccessToken(response.body.accessToken);
+    // } else {
+    //   console.log("ereasdas");
+    // }
+    setAccessToken("asdasd");
   };
 
   useEffect(() => {
@@ -51,28 +55,49 @@ const LoginPage: React.FunctionComponent = () => {
         className="flex flex-col items-center w-1/3 gap-4 px-10 py-20 bg-white rounded-lg shadow"
       >
         <h2 className="text-2xl font-semibold text-gray-500">Login</h2>
-        <InputField
-          name="email"
+        <Input
+          size="lg"
           placeholder="Enter your email"
-          variant="filled"
-          register={register}
-          errors={errors}
+          radius="sm"
+          isInvalid={!!errors.email}
+          errorMessage={errors.email?.message || ""}
+          {...register("email")}
         />
-        <InputField
-          name="password"
+        <Input
+          type={isVisible ? "text" : "password"}
+          size="lg"
           placeholder="Enter your password"
-          variant="filled"
-          type="password"
-          register={register}
-          errors={errors}
+          radius="sm"
+          endContent={
+            <button
+              className="text-gray-500 focus:outline-none"
+              type="button"
+              onClick={toggleVisibility}
+            >
+              {isVisible ? (
+                <LucideEyeOff className="pointer-events-none" />
+              ) : (
+                <LucideEye className="pointer-events-none" />
+              )}
+            </button>
+          }
+          isInvalid={!!errors.password}
+          errorMessage={errors.password?.message || ""}
+          {...register("password")}
         />
 
         <Button
+          size="lg"
+          radius="sm"
           type="submit"
-          text="Sign in"
-          className="w-full rounded-lg"
+          variant="solid"
+          color="primary"
           isLoading={loading > 0}
-        />
+          className="text-lg font-semibold"
+          fullWidth
+        >
+          Login
+        </Button>
       </form>
     </div>
   );
