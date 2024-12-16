@@ -13,6 +13,10 @@ export default {
         primary: "#18C0C1",
         "primary-dark-shade": "#149B9D",
         "primary-light-shade": "#3AE1E2",
+        "ghost-white": "#F5F6FA",
+      },
+      height: {
+        "70px": "70px",
       },
       keyframes: {
         "loader-scale1": {
