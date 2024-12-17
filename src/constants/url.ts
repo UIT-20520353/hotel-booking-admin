@@ -5,6 +5,7 @@ const apiURL = {
   GET_ALL_ADMINISTRATIVE_REGIONS: "/api/common/administrative-regions",
   GET_ALL_ADMINISTRATIVE_UNITS: "/api/common/administrative-units",
   LOGIN: "/api/authentication/login",
+  PROFILE: "/api/admin/profile",
 };
 
 export { apiURL };

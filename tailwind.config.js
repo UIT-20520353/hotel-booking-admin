@@ -13,6 +13,8 @@ export default {
         primary: "#18C0C1",
         "primary-dark-shade": "#149B9D",
         "primary-light-shade": "#3AE1E2",
+        "carmine-red": "#Ed2939",
+        "lavender-gray": "#F5F6FA",
       },
       keyframes: {
         "loader-scale1": {

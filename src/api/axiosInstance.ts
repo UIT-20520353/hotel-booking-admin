@@ -13,7 +13,7 @@ axiosInstance.interceptors.request.use(
     const accessToken = localStorage.getItem(appConstants.ACCESS_TOKEN_KEY);
 
     if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+      config.headers.Authorization = `Bearer ${JSON.parse(accessToken)}`;
     }
 
     store.dispatch(increaseLoading());
