@@ -35,7 +35,7 @@ const Dashboard: React.FunctionComponent = () => {
   }, [navigate, accessToken]);
 
   return (
-    <div className="flex items-center justify-center w-full h-screen">
+    <div className="w-full h-screen">
       {/* <Map
         mapboxAccessToken={appConstants.VITE_MAP_BOX_KEY}
         initialViewState={{

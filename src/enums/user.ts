@@ -1,0 +1,6 @@
+export enum EUserRole {
+  SYSTEM_ADMIN = "SYSTEM_ADMIN",
+  BUSINESS_OWNER = "BUSINESS_OWNER",
+  CUSTOMER = "CUSTOMER",
+  STAFF = "STAFF",
+}

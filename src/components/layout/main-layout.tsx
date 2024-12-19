@@ -1,10 +1,9 @@
 import appConstants from "@/constants/app";
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useLocalStorage } from "usehooks-ts";
 import Header from "./header";
 import Sidebar from "./sidebar";
-import { authenticationApi } from "@/api";
 
 const MainLayout: React.FunctionComponent = () => {
   const navigate = useNavigate();
@@ -13,22 +12,9 @@ const MainLayout: React.FunctionComponent = () => {
     undefined
   );
 
-  const getProfile = () => {
-    authenticationApi
-      .getProfile()
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
   useEffect(() => {
     if (!accessToken) {
       navigate("/login");
-    } else {
-      getProfile();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
@@ -36,8 +22,12 @@ const MainLayout: React.FunctionComponent = () => {
   return (
     <div className="flex items-start w-full min-h-screen bg-lavender-gray">
       <Sidebar />
-      <main className="flex-1 h-10 bg-red-400">
+      <main className="flex-1">
         <Header />
+
+        <div className="w-full min-h-[calc(100vh-64px)] p-8 border-l border-gray-300">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

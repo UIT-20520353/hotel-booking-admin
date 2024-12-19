@@ -6,6 +6,18 @@ const apiURL = {
   GET_ALL_ADMINISTRATIVE_UNITS: "/api/common/administrative-units",
   LOGIN: "/api/authentication/login",
   PROFILE: "/api/admin/profile",
+  UPLOAD_IMAGE: "/api/image/upload",
 };
 
-export { apiURL };
+const appURL = {
+  HOME: "/",
+  LOGIN: "/login",
+  PROFILE: "/profile",
+  ADMINISTRATIVE_REGIONS: "/administrative-regions",
+  ADMINISTRATIVE_UNITS: "/administrative-units",
+  ATTRACTIONS: "/attractions",
+  ADD_ATTRACTION: "/attractions/add",
+  USERS: "/users",
+};
+
+export { apiURL, appURL };
