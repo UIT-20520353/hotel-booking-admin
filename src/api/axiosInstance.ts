@@ -55,4 +55,8 @@ const handleResponse = <T>(
       error: error.response.data,
     }));
 
-export { axiosInstance, handleResponse };
+const mapboxInstance = axios.create({
+  baseURL: "https://api.mapbox.com",
+});
+
+export { axiosInstance, handleResponse, mapboxInstance };

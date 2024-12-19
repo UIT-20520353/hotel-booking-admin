@@ -1,10 +1,17 @@
-import { imageApi } from "@/api";
+import { imageApi, mapboxApi } from "@/api";
 import { MarkerIcon } from "@/assets/icons";
 import { Button } from "@/components/common";
 import appConstants from "@/constants/app";
 import { appURL } from "@/constants/url";
-import { Card, CardBody, Input } from "@nextui-org/react";
-import React, { useState } from "react";
+import { TSuggestion } from "@/types/mapbox";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Card,
+  CardBody,
+  Input,
+} from "@nextui-org/react";
+import React, { useEffect, useState } from "react";
 import Map, { Marker } from "react-map-gl";
 import { useNavigate } from "react-router-dom";
 import RichTextEditor, {
@@ -22,6 +29,7 @@ import RichTextEditor, {
   Strike,
 } from "reactjs-tiptap-editor";
 import "reactjs-tiptap-editor/style.css";
+import { useDebounceCallback } from "usehooks-ts";
 
 const extensions = [
   BaseKit.configure({
@@ -59,13 +67,28 @@ const extensions = [
 const AddAttraction: React.FunctionComponent = () => {
   const navigate = useNavigate();
 
+  const [suggestions, setSuggestions] = useState<TSuggestion[]>([]);
   const [content, setContent] = useState<string>("");
+  const [search, setSearch] = useState<string>("");
 
   const onChangeContent = (value: string) => {
     setContent(value);
   };
 
-  console.log(content);
+  const onSearch = async (_text: string) => {
+    const { ok, body } = await mapboxApi.search(_text);
+
+    if (ok && body) {
+      setSuggestions(body.suggestions);
+    }
+  };
+
+  const debounceSearch = useDebounceCallback(onSearch, 1000);
+
+  useEffect(() => {
+    debounceSearch(search);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
 
   return (
     <div className="w-full space-y-3">
@@ -91,12 +114,21 @@ const AddAttraction: React.FunctionComponent = () => {
               label="Name"
               labelPlacement="outside"
             />
-            <Input
+            <Autocomplete
               size="lg"
+              defaultItems={suggestions}
               placeholder="Enter attraction address"
               label="Address"
               labelPlacement="outside"
-            />
+              inputValue={search}
+              onInputChange={(value) => setSearch(value)}
+            >
+              {(suggestion) => (
+                <AutocompleteItem key={suggestion.mapbox_id}>
+                  {suggestion.full_address || suggestion.name}
+                </AutocompleteItem>
+              )}
+            </Autocomplete>
 
             <div className="w-full">
               <Map
@@ -126,7 +158,6 @@ const AddAttraction: React.FunctionComponent = () => {
                   content={content}
                   onChangeContent={onChangeContent}
                   extensions={extensions}
-                  disabled
                 />
               </CardBody>
             </Card>
