@@ -4,3 +4,4 @@ export * from "./administrative";
 export * from "./provinceApi";
 export * from "./imageApi";
 export * from "./mapboxApi";
+export * from "./attractionApi";

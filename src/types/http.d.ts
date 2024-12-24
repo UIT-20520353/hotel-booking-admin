@@ -9,4 +9,5 @@ export type THttpResponse<T> = {
   status: number;
   body?: T;
   error?: TErrorResponse;
+  totalPages?: number;
 };

@@ -3,13 +3,14 @@ import { MarkerIcon } from "@/assets/icons";
 import { Button, NotificationModal, TModalData } from "@/components/common";
 import appConstants from "@/constants/app";
 import { appURL } from "@/constants/url";
+import { TAttraction } from "@/types/attraction";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardBody, cn, Input, Textarea } from "@nextui-org/react";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import AutoComplete from "react-google-autocomplete";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import Map, { Marker } from "react-map-gl";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import RichTextEditor, {
   BaseKit,
   Blockquote,
@@ -76,7 +77,8 @@ const extensions = [
   }),
 ];
 
-const AddAttraction: React.FunctionComponent = () => {
+const EditAttraction: React.FunctionComponent = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const {
@@ -85,11 +87,21 @@ const AddAttraction: React.FunctionComponent = () => {
     formState: { errors },
     control,
     watch,
+    reset,
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     mode: "onChange",
+    defaultValues: {
+      name: "",
+      summary: "",
+      description: "",
+      image: undefined,
+    },
   });
 
+  const [attraction, setAttraction] = useState<TAttraction | undefined>(
+    undefined
+  );
   const [dataPopup, setDataPopup] = useState<undefined | TModalData>(undefined);
 
   const image = watch("image");
@@ -138,11 +150,47 @@ const AddAttraction: React.FunctionComponent = () => {
     );
   };
 
+  const getAttractionDetail = useCallback(async (attractionId: number) => {
+    const { ok, body } = await attractionApi.getAttractionDetail(attractionId);
+
+    if (ok && body) {
+      const { latitude, longitude, address } = body;
+      setPlace({
+        lat: latitude,
+        lng: longitude,
+        address,
+      });
+      setAttraction(body);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!id || isNaN(Number(id))) {
+      navigate(appURL.ATTRACTIONS);
+    } else {
+      getAttractionDetail(Number(id));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, getAttractionDetail]);
+
+  useEffect(() => {
+    if (attraction) {
+      console.log(attraction);
+
+      reset({
+        name: attraction.name,
+        summary: attraction.summary,
+        description: attraction.description,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attraction]);
+
   return (
     <Fragment>
       <div className="w-full space-y-3">
         <div className="flex items-center justify-between w-full">
-          <h2 className="text-3xl font-bold">Add attraction</h2>
+          <h2 className="text-3xl font-bold">Edit attraction</h2>
 
           <Button
             onPress={() => navigate(appURL.ATTRACTIONS)}
@@ -199,6 +247,13 @@ const AddAttraction: React.FunctionComponent = () => {
                       className="object-cover object-center w-full h-auto aspect-video rounded-xl"
                     />
                   )}
+                  {!!attraction?.overviewImage && !image && (
+                    <img
+                      src={attraction.overviewImage}
+                      alt="attraction image"
+                      className="object-cover object-center w-full h-auto aspect-video rounded-xl"
+                    />
+                  )}
                 </div>
 
                 <Controller
@@ -251,7 +306,7 @@ const AddAttraction: React.FunctionComponent = () => {
                         });
                       }
                     }}
-                    defaultValue="Thành phố Hồ Chí Minh"
+                    defaultValue={attraction?.address}
                   />
                 </div>
               </div>
@@ -316,6 +371,13 @@ const AddAttraction: React.FunctionComponent = () => {
                 >
                   Save
                 </Button>
+                <Button
+                  className="w-44"
+                  onPress={() => navigate(appURL.ATTRACTIONS)}
+                  type="button"
+                >
+                  Cancel
+                </Button>
               </div>
             </form>
           </CardBody>
@@ -326,4 +388,4 @@ const AddAttraction: React.FunctionComponent = () => {
   );
 };
 
-export default AddAttraction;
+export default EditAttraction;

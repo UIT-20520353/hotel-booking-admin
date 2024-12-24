@@ -46,14 +46,21 @@ const handleResponse = <T>(
       status: res.status,
       body: res.data as T,
       error: undefined,
+      totalPages: Number(res.headers["x-total-pages"]),
     }))
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .catch((error: any) => ({
-      ok: false,
-      status: error.status,
-      body: undefined,
-      error: error.response.data,
-    }));
+    .catch((error: any) => {
+      if (error.status === 401) {
+        localStorage.removeItem(appConstants.ACCESS_TOKEN_KEY);
+      }
+
+      return {
+        ok: false,
+        status: error.status,
+        body: undefined,
+        error: error.response.data,
+      };
+    });
 
 const mapboxInstance = axios.create({
   baseURL: "https://api.mapbox.com",

@@ -1,6 +1,7 @@
 import MainLayout from "@/components/layout/main-layout";
 import Attractions from "@/pages/attractions";
 import AddAttraction from "@/pages/attractions/add-attraction";
+import EditAttraction from "@/pages/attractions/edit-attraction";
 import LoginPage from "@/pages/authentication/login";
 import Dashboard from "@/pages/dashboard";
 import Users from "@/pages/users";
@@ -15,6 +16,7 @@ const App: React.FunctionComponent = () => (
       <Route index element={<Dashboard />} />
       <Route path="attractions" element={<Attractions />} />
       <Route path="attractions/add" element={<AddAttraction />} />
+      <Route path="attractions/:id" element={<EditAttraction />} />
       <Route path="users" element={<Users />} />
     </Route>
   </Routes>

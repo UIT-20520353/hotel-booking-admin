@@ -7,6 +7,12 @@ const apiURL = {
   LOGIN: "/api/authentication/login",
   PROFILE: "/api/admin/profile",
   UPLOAD_IMAGE: "/api/image/upload",
+  CREATE_ATTRACTION: "/api/admin/attractions",
+  GET_ALL_ATTRACTIONS: "/api/admin/attractions",
+  DELETE_ATTRACTION: (attractionId: number) =>
+    `/api/admin/attractions/${attractionId}`,
+  GET_ATTRACTION: (attractionId: number) =>
+    `/api/admin/attractions/${attractionId}`,
 };
 
 const appURL = {
@@ -18,6 +24,7 @@ const appURL = {
   ATTRACTIONS: "/attractions",
   ADD_ATTRACTION: "/attractions/add",
   USERS: "/users",
+  EDIT_ATTRACTION: (attractionId: number) => `/attractions/${attractionId}`,
 };
 
 export { apiURL, appURL };
