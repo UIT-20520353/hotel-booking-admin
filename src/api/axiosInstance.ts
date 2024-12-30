@@ -5,7 +5,7 @@ import { THttpResponse } from "@/types/http";
 import axios, { AxiosResponse } from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8081",
+  baseURL: "http://localhost:8082",
 });
 
 axiosInstance.interceptors.request.use(
